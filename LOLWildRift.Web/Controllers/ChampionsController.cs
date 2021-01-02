@@ -30,6 +30,14 @@ namespace LOLWildRift.Web.Controllers
             try
             {
                 champions = await services.ChampionList();
+
+                foreach (var data in champions.Champions)
+                {
+                    if (data.HISTORY.Length > 10)
+                    {
+                        data.HISTORY = data.HISTORY.Substring(0, 50) + "...";
+                    }
+                }
             }
             catch (Exception)
             {
@@ -65,8 +73,6 @@ namespace LOLWildRift.Web.Controllers
                 lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
                 ViewData["roles"] = roles.roles;
                 ViewData["lanes"] = lanes.Lanes;
-
-
             }
             catch (Exception)
             {
@@ -108,18 +114,66 @@ namespace LOLWildRift.Web.Controllers
         }
 
         // GET: ChampionsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            try
+            {
+                var roles = await services.RoleList();
+                var lanes = await services.RecommededLaneList();
+
+                roles.roles.Insert(0, new RoleEntity { ID = 0, ROLE_NAME = "Select" });
+                lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
+                ViewData["roles"] = roles.roles;
+                ViewData["lanes"] = lanes.Lanes;
+
+                var champions = await services.GetChampion(id);
+
+                ChampionAddEntity championsAdd = new ChampionAddEntity()
+                {
+                    ID = champions.ID,
+                    NAME = champions.NAME,
+                    HISTORY = champions.HISTORY,
+                    STATS_DAMAGE = champions.STATS_DAMAGE,
+                    STATS_DIFFICULITY = champions.STATS_DIFFICULITY,
+                    STATS_TOUGHNESS = champions.STATS_TOUGHNESS,
+                    STATS_UTILITY = champions.STATS_UTILITY,
+                    ROLE_ID = roles.roles.Find(x => x.ROLE_NAME == champions.ROLE).ID,
+                    RECOMMENDED_LANE_ID = lanes.Lanes.Find(x => x.LANE == champions.LANE).ID,
+                    IMAGE_PATH = champions.IMAGE_PATH
+                };
+
+                return View(championsAdd);
+            }
+            catch (Exception)
+            {
+
+                return View();
+            }
         }
 
         // POST: ChampionsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, ChampionAddEntity championAdd)
         {
             try
             {
+                ResultEntity result = new ResultEntity();
+                if (!String.IsNullOrEmpty(championAdd.NAME))
+                {
+                    if (championAdd.IMAGE_FILE != null)
+                    {
+                        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                        string filePath = Path.Combine(uploadsFolder, championAdd.IMAGE_FILE.FileName);
+                        using (var fileSteam = new FileStream(filePath, FileMode.Create))
+                        {
+                            championAdd.IMAGE_FILE.CopyTo(fileSteam);
+                        }
+
+                        championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
+                    }
+                    result = await services.ChampionAddOrUpdate(championAdd);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
