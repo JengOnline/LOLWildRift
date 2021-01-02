@@ -1,0 +1,78 @@
+﻿@model LOLWildRift.Web.Models.ChampionAddEntity
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>ChampionAddEntity</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="NAME" class="control-label"></label>
+                <input asp-for="NAME" class="form-control" maxlength="50" />
+                <span asp-validation-for="NAME" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HISTORY" class="control-label"></label>
+                <input asp-for="HISTORY" class="form-control" />
+                <span asp-validation-for="HISTORY" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="STATS_DAMAGE" class="control-label"></label>
+                <input asp-for="STATS_DAMAGE" class="form-control" maxlength="3" />
+                <span asp-validation-for="STATS_DAMAGE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="STATS_TOUGHNESS" class="control-label"></label>
+                <input asp-for="STATS_TOUGHNESS" class="form-control" maxlength="3" />
+                <span asp-validation-for="STATS_TOUGHNESS" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="STATS_UTILITY" class="control-label"></label>
+                <input asp-for="STATS_UTILITY" class="form-control" maxlength="3" />
+                <span asp-validation-for="STATS_UTILITY" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="STATS_DIFFICULITY" class="control-label"></label>
+                <input asp-for="STATS_DIFFICULITY" class="form-control" maxlength="3" />
+                <span asp-validation-for="STATS_DIFFICULITY" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ROLE" class="control-label"></label>
+                <select asp-for="ROLE_ID"
+                        asp-items="@(new SelectList((List<RoleEntity>)@ViewData["roles"],"ID","ROLE_NAME"))"
+                        class="form-control"></select>
+                <span asp-validation-for="ROLE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LANE" class="control-label"></label>
+                <select asp-for="RECCOMENDED_LANE_ID"
+                        asp-items="@(new SelectList((List<RecommededLaneEntity>)@ViewData["lanes"],"ID","LANE"))"
+                        class="form-control"></select>
+                <span asp-validation-for="LANE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IMAGE_FILE" class="control-label">Choose file</label>
+                <input asp-for="IMAGE_FILE" class="control-label" />
+                <span asp-validation-for="IMAGE_FILE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

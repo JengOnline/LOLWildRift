@@ -1,0 +1,90 @@
+﻿@model IEnumerable<LOLWildRift.Web.Models.ChampionsEntity>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HISTORY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STATS_DAMAGE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STATS_TOUGHNESS)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STATS_UTILITY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STATS_DIFFICULITY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ROLE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LANE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IMAGE_PATH)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HISTORY)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STATS_DAMAGE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STATS_TOUGHNESS)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STATS_UTILITY)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STATS_DIFFICULITY)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ROLE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LANE)
+                </td>
+                <td>
+                    <img src="@item.IMAGE_PATH" height="80" width="80">
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new {  id= item.ID  }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
