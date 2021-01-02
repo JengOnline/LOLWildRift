@@ -33,7 +33,7 @@ namespace LOLWildRift.Web.Controllers
 
                 foreach (var data in champions.Champions)
                 {
-                    if (data.HISTORY.Length > 10)
+                    if (data.HISTORY != null && data.HISTORY.Length > 10)
                     {
                         data.HISTORY = data.HISTORY.Substring(0, 50) + "...";
                     }
@@ -183,19 +183,20 @@ namespace LOLWildRift.Web.Controllers
         }
 
         // GET: ChampionsController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        public ActionResult Delete()
         {
             return View();
         }
 
         // POST: ChampionsController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var result = await services.ChampionDelete(id);
+                return RedirectToAction("Index");
             }
             catch
             {

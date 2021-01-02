@@ -1,14 +1,17 @@
 ﻿@model IEnumerable<LOLWildRift.Web.Models.ChampionsEntity>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Champion";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Champion List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<P>
+    <button type="button" class="btn btn-outline-primary"
+            onclick="location.href='@Url.Action("Create", "Champions")'">
+        Create champion
+    </button>
 </p>
 <table class="table">
     <thead>
@@ -48,7 +51,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NAME)
+                    <label id="lblName_@item.ID"> @Html.DisplayFor(modelItem => item.NAME)</label>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.HISTORY)
@@ -75,9 +78,16 @@
                     <img src="@item.IMAGE_PATH" height="80" width="80">
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#myModal">
+                    <button type="button" class="btn btn-outline-warning" style="width:100%; height:auto"
+                            onclick="location.href='@Url.Action("Edit", "Champions", new { id = item.ID })'">
+                        <i class="far fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-info" style="width: 100%; height: auto"
+                            onclick="location.href='@Url.Action("Details", "Champions", new { id = item.ID })'">
+                        <i class="fa fa-info-circle"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" style="width: 100%; height: auto"
+                            id="btnDelete" data-id="@item.ID">
                         <i class="fa fa-trash"></i>
                     </button>
 
@@ -90,28 +100,60 @@
 
 <div class="container">
     <!-- The Modal -->
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-sm">
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Heading</h4>
+                    <h4 class="modal-title">Are you sure you want to delete this?</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    Modal body..
+                    <input type="hidden" id="lblID" />
+                    <label id="lblName"></label>
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnAcceptDelete">Delete</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
 
             </div>
         </div>
     </div>
-
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        //Javascript
+        $(".table").on("click", "#btnDelete", function () {
+            var id = $(this).data('id');
+            document.getElementById('lblID').value = id;
+            document.getElementById('lblName').innerHTML = "Champion : " + document.getElementById('lblName_' + id).innerHTML;
+            $('#deleteModal').modal('show');
+        });
+
+        $(function () {
+            //Jquery
+            $("#btnAcceptDelete").click(function () {
+                var url = "/Champions/Delete";
+                var id = parseInt($('#lblID').val());
+                //ajax
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: { id: id },
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+
+    </script>
+}

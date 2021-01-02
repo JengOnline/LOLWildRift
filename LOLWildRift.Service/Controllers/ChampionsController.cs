@@ -101,6 +101,25 @@ namespace LOLWildRift.Service.Controllers
                     "Error retrieving data from the database");
             }
         }
+
+        [HttpPost]
+        [Route("ChampionDelete")]
+        public async Task<IActionResult> ChampionDelete([FromHeader] int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionDelete(id)));
+                }
+                else return BadRequest("ID is required!!!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database" + ex.Message);
+            }
+        }
     }
 }
 

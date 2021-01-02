@@ -104,5 +104,17 @@ namespace LOLWildRift.Service.Models
                 throw ex;
             }
         }
+
+        public async Task<Object> ChampionDelete(int id)
+        {
+            try 
+            {
+                return await _championsContext.AddOrUpdate.FromSqlInterpolated($"EXEC [CHAMPIONS.SP_DELETE] {id}").ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

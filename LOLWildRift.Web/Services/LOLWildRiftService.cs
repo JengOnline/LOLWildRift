@@ -132,5 +132,29 @@ namespace LOLWildRift.Web.Services
 
         }
 
+        public async Task<ResultEntity> ChampionDelete(int? id)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                if (id.HasValue)
+                {
+                    HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, url + "ChampionDelete");
+                    requestMessage.Headers.Add("id", id.ToString());
+                    HttpResponseMessage response = await client.SendAsync(requestMessage);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseStr = await response.Content.ReadAsStringAsync();
+                        result = JsonConvert.DeserializeObject<ResultEntity>(responseStr);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                result.RESULT = false;
+            }
+            return result;
+        }
+
     }
 }
