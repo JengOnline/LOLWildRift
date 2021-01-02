@@ -106,13 +106,13 @@ namespace LOLWildRift.Web.Services
             return lanes;
         }
 
-        public async Task<ResultEntity> ChampionAdd(ChampionAddEntity champion)
+        public async Task<ResultEntity> ChampionAddOrUpdate(ChampionAddEntity champion)
         {
             ResultEntity result = new ResultEntity();
             try
             {
                 string reqBody = JsonConvert.SerializeObject(champion);
-                HttpResponseMessage response = await client.PostAsync(url + "ChampionsAdd", 
+                HttpResponseMessage response = await client.PostAsync(url + "ChampionAddOrUpdate", 
                     new StringContent(reqBody, Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {

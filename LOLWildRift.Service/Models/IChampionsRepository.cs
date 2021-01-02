@@ -7,7 +7,7 @@ namespace LOLWildRift.Service.Models
 {
     public interface IChampionsRepository
     {
-        public Task<Object> ChampionAdd(ChampionAddEntity champion);
+        public Task<Object> ChampionAddOrUpdate(ChampionAddEntity champion);
         public Task<Object> GetChampion(int id);
         public Task<Object> ChampionsList();
         public Task<Object> RoleList();

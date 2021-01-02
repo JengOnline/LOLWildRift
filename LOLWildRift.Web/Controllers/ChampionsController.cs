@@ -79,18 +79,25 @@ namespace LOLWildRift.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create(IFormCollection collection)  
-        public ActionResult Create(ChampionAddEntity championAdd)
+        public async Task<ActionResult> Create(ChampionAddEntity championAdd)
         {
             try
             {
-                if (championAdd.IMAGE_FILE != null)
+                ResultEntity result = new ResultEntity();
+                if (!String.IsNullOrEmpty(championAdd.NAME))
                 {
-                    string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
-                    string filePath = Path.Combine(uploadsFolder, championAdd.IMAGE_FILE.FileName);
-                    using(var fileSteam = new FileStream(filePath, FileMode.Create))
+                    if (championAdd.IMAGE_FILE != null)
                     {
-                        championAdd.IMAGE_FILE.CopyTo(fileSteam);
+                        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                        string filePath = Path.Combine(uploadsFolder, championAdd.IMAGE_FILE.FileName);
+                        using (var fileSteam = new FileStream(filePath, FileMode.Create))
+                        {
+                            championAdd.IMAGE_FILE.CopyTo(fileSteam);
+                        }
+
+                        championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
                     }
+                    result = await services.ChampionAddOrUpdate(championAdd);
                 }
                 return RedirectToAction(nameof(Index));
             }

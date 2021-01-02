@@ -20,14 +20,14 @@ namespace LOLWildRift.Service.Controllers
         }
 
         [HttpPost]
-        [Route("ChampionsAdd")]
-        public async Task<IActionResult> ChampionsAdd([FromBody] ChampionAddEntity champion)
+        [Route("ChampionAddOrUpdate")]
+        public async Task<IActionResult> ChampionAddOrUpdate([FromBody] ChampionAddEntity champion)
         {
             try
             {
                 if (!string.IsNullOrEmpty(champion.NAME))
                 {
-                    return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionAdd(champion)));
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionAddOrUpdate(champion)));
                 }
                 else return BadRequest("Name is required!!!");
             }

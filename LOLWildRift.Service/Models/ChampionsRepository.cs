@@ -16,7 +16,7 @@ namespace LOLWildRift.Service.Models
             _championsContext = championsContext;
         }
 
-        public async Task<Object> ChampionAdd(ChampionAddEntity champion)
+        public async Task<Object> ChampionAddOrUpdate(ChampionAddEntity champion)
         {
             try
             {

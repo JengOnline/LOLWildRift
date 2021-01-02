@@ -73,8 +73,8 @@ namespace LOLWildRift.Web.Models
         [JsonProperty("ROLE_ID")]
         public int? ROLE_ID { get; set; }
 
-        [JsonProperty("RECCOMENDED_LANE_ID")]
-        public int? RECCOMENDED_LANE_ID { get; set; }
+        [JsonProperty("RECOMMENDED_LANE_ID")]
+        public int? RECOMMENDED_LANE_ID { get; set; }
 
         [JsonProperty("IMAGE_FILE")]
         public IFormFile IMAGE_FILE { get; set; }
