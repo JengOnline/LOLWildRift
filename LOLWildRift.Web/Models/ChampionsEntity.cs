@@ -18,16 +18,20 @@ namespace LOLWildRift.Web.Models
         public string HISTORY { get; set; }
 
         [JsonProperty("STATS_DAMAGE")]
+        [Range(1,100,ErrorMessage ="Value for {0} must be between {1} and {2}.")]
       
         public int? STATS_DAMAGE { get; set; }
 
         [JsonProperty("STATS_TOUGHNESS")]
+        [Range(1, 100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int? STATS_TOUGHNESS { get; set; }
 
         [JsonProperty("STATS_UTILITY")]
+        [Range(1, 100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int? STATS_UTILITY { get; set; }
 
         [JsonProperty("STATS_DIFFICULITY")]
+        [Range(1, 100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int? STATS_DIFFICULITY { get; set; }
 
         [JsonProperty("ROLE")]

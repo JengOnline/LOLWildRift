@@ -1,11 +1,9 @@
-﻿using Grpc.Core;
-using LOLWildRift.Web.Models;
+﻿using LOLWildRift.Web.Models;
 using LOLWildRift.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +22,7 @@ namespace LOLWildRift.Web.Controllers
         }
 
         // List: ChampionsController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchString)
         {
             ChampionsList champions = new ChampionsList();
             try
@@ -37,6 +35,15 @@ namespace LOLWildRift.Web.Controllers
                     {
                         data.HISTORY = data.HISTORY.Substring(0, 50) + "...";
                     }
+                }
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    @ViewData["CurrentFilter"] = searchString;
+                    var resultObj = champions.Champions.Where(c => c.NAME.ToUpper().Contains(searchString.ToUpper())
+                    || c.LANE.ToUpper().Contains(searchString.ToUpper())
+                    || c.ROLE.ToUpper().Contains(searchString.ToUpper()));
+                    return View(resultObj.ToList());
                 }
             }
             catch (Exception)
@@ -191,10 +198,16 @@ namespace LOLWildRift.Web.Controllers
 
         // POST: ChampionsController/Delete/5
         [HttpPost]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id, string name)
         {
             try
             {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                string filePath = Path.Combine(uploadsFolder, name.Trim() + ".PNG");
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
                 var result = await services.ChampionDelete(id);
                 return RedirectToAction("Index");
             }

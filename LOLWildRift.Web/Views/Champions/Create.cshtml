@@ -3,36 +3,35 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
 }
 
 <h1>Create</h1>
 
 <hr />
-<div class="row">
-    <div class="container">
-        <div class="alert alert alert-danger" style="display:none" id="nameAlert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Name</strong> is required.
-        </div>
-        <div class="alert alert alert-danger" style="display:none" id="roleAlert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Role</strong> is required.
-        </div>
-        <div class="alert alert alert-danger" style="display:none" id="laneAlert">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Lane</strong> is required.
-        </div>
+<div class="container">
+    <div class="alert alert alert-danger" style="display:none" id="nameAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please enter the <strong> NAME </strong> of the champion.
+    </div>
+    <div class="alert alert alert-danger" style="display:none" id="roleAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please choose the <strong> ROLE </strong> of the champion.
+    </div>
+    <div class="alert alert alert-danger" style="display:none" id="laneAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please choose the  <strong> LANE </strong> of the champion.
     </div>
 </div>
 
-<div class="row">
+<div class="row" id="createForm">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
                 <label asp-for="NAME" class="control-label"></label>
-                <input asp-for="NAME" class="form-control" maxlength="50" id="txtName" />
+                <input asp-for="NAME" class="form-control" id="txtName" />
                 <span asp-validation-for="NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,7 +41,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="STATS_DAMAGE" class="control-label"></label>
-                <input asp-for="STATS_DAMAGE" class="form-control" maxlength="3" />
+                <input asp-for="STATS_DAMAGE" class="form-control"/>
                 <span asp-validation-for="STATS_DAMAGE" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -121,24 +120,26 @@
         function nameAlert() {
             $("#nameAlert").slideDown(500);
             $("#nameAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#nameAlert").slideUp(500);
+                $("#nameAlert").slideUp(1000);
             });
         }
 
         function roleAlert() {
             $("#roleAlert").slideDown(500);
             $("#roleAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#roleAlert").slideUp(500);
-            });
-        }
-        function laneAlert() {
-            $("#laneAlert").slideDown(500);
-            $("#laneAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#laneAlert").slideUp(500);
+                $("#roleAlert").slideUp(1000);
             });
         }
 
-        $('#txtName').keyup(function () {
+        function laneAlert() {
+            $("#laneAlert").slideDown(500);
+            $("#laneAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#laneAlert").slideUp(1000);
+            });
+        }
+
+
+        $('#txtName').focusout(function () {
             checkValue();
         });
 
@@ -149,14 +150,6 @@
         $('#ddlLanes').change(function () {
             checkValue();
         });
-
-        $('#nameAlertClose').click(function () {
-            $(this).slideUp();
-        });
-
-      
-
-        
 
     </script>
 }

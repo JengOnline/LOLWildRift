@@ -7,21 +7,36 @@
 
 <h1>Edit</h1>
 
-<h4>ChampionAddEntity</h4>
 <hr />
+
+<div class="container">
+    <div class="alert alert alert-danger" style="display:none" id="nameAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please enter the <strong> NAME </strong> of the champion.
+    </div>
+    <div class="alert alert alert-danger" style="display:none" id="roleAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please choose the <strong> ROLE </strong> of the champion.
+    </div>
+    <div class="alert alert alert-danger" style="display:none" id="laneAlert">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Please choose the  <strong> LANE </strong> of the champion.
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <img src="@Html.DisplayFor(model => model.IMAGE_PATH)" height="80" width="80"><br/>
+                <img src="@Html.DisplayFor(model => model.IMAGE_PATH)" height="80" width="80"><br />
                 <input asp-for="IMAGE_FILE" class="control-label" />
                 <span asp-validation-for="IMAGE_FILE" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="NAME" class="control-label"></label>
-                <input asp-for="NAME" class="form-control" maxlength="50" />
+                <input asp-for="NAME" class="form-control" maxlength="50" id="txtName" />
                 <span asp-validation-for="NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -53,27 +68,86 @@
                 <label asp-for="ROLE" class="control-label"></label>
                 <select asp-for="ROLE_ID"
                         asp-items="@(new SelectList((List<RoleEntity>)@ViewData["roles"],"ID","ROLE_NAME",Model.ROLE_ID))"
-                        class="form-control"></select>
+                        class="form-control" id="ddlRoles"></select>
                 <span asp-validation-for="ROLE" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LANE" class="control-label"></label>
                 <select asp-for="RECOMMENDED_LANE_ID"
                         asp-items="@(new SelectList((List<RecommededLaneEntity>)@ViewData["lanes"],"ID","LANE",Model.RECOMMENDED_LANE_ID))"
-                        class="form-control"></select>
+                        class="form-control" id="ddlLanes"></select>
                 <span asp-validation-for="LANE" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-outline-primary" id="btnSubmit" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <button type="button" class="btn btn-outline-info" onclick="location.href='@Url.Action("Index", "Champions")'">Back to List</button>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function checkValue() {
+            var name = $('#txtName');
+            var role = $('#ddlRoles');
+            var lanes = $('#ddlLanes');
+            if (name.val() == null || name.val() == ''
+                || role.find("option:selected").val() == 0
+                || lanes.find("option:selected").val() == 0) {
+                $('#btnSubmit').prop('disabled', true);
+
+                if (name.val() == null || name.val() == '') {
+                    nameAlert();
+                }
+                if (role.find("option:selected").val() == 0) {
+                    roleAlert();
+                }
+                if (lanes.find("option:selected").val() == 0) {
+                    laneAlert();
+                }
+            }
+            else {
+                $('#btnSubmit').attr('disabled', false);
+            }
+        }
+
+        function nameAlert() {
+            $("#nameAlert").slideDown(500);
+            $("#nameAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#nameAlert").slideUp(1000);
+            });
+        }
+
+        function roleAlert() {
+            $("#roleAlert").slideDown(500);
+            $("#roleAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#roleAlert").slideUp(1000);
+            });
+        }
+
+        function laneAlert() {
+            $("#laneAlert").slideDown(500);
+            $("#laneAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#laneAlert").slideUp(1000);
+            });
+        }
+
+
+        $('#txtName').focusout(function () {
+            checkValue();
+        });
+
+        $('#ddlRoles').change(function () {
+            checkValue();
+        });
+
+        $('#ddlLanes').change(function () {
+            checkValue();
+        });
+
+    </script>
 }

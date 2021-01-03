@@ -7,12 +7,20 @@
 
 <h1>Champion List</h1>
 
-<P>
-    <button type="button" class="btn btn-outline-primary"
-            onclick="location.href='@Url.Action("Create", "Champions")'">
-        Create champion
-    </button>
-</p>
+<div class="row" style="margin-bottom:10px;">
+    <div class="col-md-6">
+        <button type="button" class="btn btn-outline-primary"
+                onclick="location.href='@Url.Action("Create", "Champions")'">
+            Create champion
+        </button>
+    </div>
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="form-inline">
+            <input type="text" placeholder="search" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" style="width:70%"/>
+            <input type="submit" value="Search" class="btn btn-outline-info" style="width:30%"/>
+        </form>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -147,13 +155,12 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: { id: id },
+                    data: { id: id, name: document.getElementById('lblName_' + id).innerHTML },
                     success: function (data) {
                         window.location.reload();
                     }
                 });
             });
         });
-
     </script>
 }
