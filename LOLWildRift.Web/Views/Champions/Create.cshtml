@@ -2,11 +2,29 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Create</h1>
 
 <hr />
+<div class="row">
+    <div class="container">
+        <div class="alert alert alert-danger" style="display:none" id="nameAlert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Name</strong> is required.
+        </div>
+        <div class="alert alert alert-danger" style="display:none" id="roleAlert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Role</strong> is required.
+        </div>
+        <div class="alert alert alert-danger" style="display:none" id="laneAlert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Lane</strong> is required.
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
@@ -14,7 +32,7 @@
 
             <div class="form-group">
                 <label asp-for="NAME" class="control-label"></label>
-                <input asp-for="NAME" class="form-control" maxlength="50" />
+                <input asp-for="NAME" class="form-control" maxlength="50" id="txtName" />
                 <span asp-validation-for="NAME" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,14 +64,16 @@
                 <label asp-for="ROLE" class="control-label"></label>
                 <select asp-for="ROLE_ID"
                         asp-items="@(new SelectList((List<RoleEntity>)@ViewData["roles"],"ID","ROLE_NAME"))"
-                        class="form-control"></select>
+                        class="form-control"
+                        id="ddlRoles"></select>
                 <span asp-validation-for="ROLE" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LANE" class="control-label"></label>
                 <select asp-for="RECOMMENDED_LANE_ID"
                         asp-items="@(new SelectList((List<RecommededLaneEntity>)@ViewData["lanes"],"ID","LANE"))"
-                        class="form-control"></select>
+                        class="form-control"
+                        id="ddlLanes"></select>
                 <span asp-validation-for="LANE" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -62,16 +82,81 @@
                 <span asp-validation-for="IMAGE_FILE" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-outline-primary" id="btnSubmit" disabled="disabled" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <button type="button" class="btn btn-outline-info" onclick="location.href='@Url.Action("Index", "Champions")'">Back to List</button>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function checkValue() {
+            var name = $('#txtName');
+            var role = $('#ddlRoles');
+            var lanes = $('#ddlLanes');
+            if (name.val() == null || name.val() == ''
+                || role.find("option:selected").val() == 0
+                || lanes.find("option:selected").val() == 0) {
+                $('#btnSubmit').prop('disabled', true);
+
+                if (name.val() == null || name.val() == '') {
+                    nameAlert();
+                }
+                if (role.find("option:selected").val() == 0) {
+                    roleAlert();
+                }
+                if (lanes.find("option:selected").val() == 0) {
+                    laneAlert();
+                }
+            }
+            else {
+                $('#btnSubmit').attr('disabled', false);
+            }
+        }
+
+        function nameAlert() {
+            $("#nameAlert").slideDown(500);
+            $("#nameAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#nameAlert").slideUp(500);
+            });
+        }
+
+        function roleAlert() {
+            $("#roleAlert").slideDown(500);
+            $("#roleAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#roleAlert").slideUp(500);
+            });
+        }
+        function laneAlert() {
+            $("#laneAlert").slideDown(500);
+            $("#laneAlert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#laneAlert").slideUp(500);
+            });
+        }
+
+        $('#txtName').keyup(function () {
+            checkValue();
+        });
+
+        $('#ddlRoles').change(function () {
+            checkValue();
+        });
+
+        $('#ddlLanes').change(function () {
+            checkValue();
+        });
+
+        $('#nameAlertClose').click(function () {
+            $(this).slideUp();
+        });
+
+      
+
+        
+
+    </script>
 }

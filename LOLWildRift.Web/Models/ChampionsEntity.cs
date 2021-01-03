@@ -1,12 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LOLWildRift.Web.Models
 {
@@ -22,19 +18,16 @@ namespace LOLWildRift.Web.Models
         public string HISTORY { get; set; }
 
         [JsonProperty("STATS_DAMAGE")]
-        [RegularExpression(@"(100|([1-9][0-9])|[1-9])")]
+      
         public int? STATS_DAMAGE { get; set; }
 
         [JsonProperty("STATS_TOUGHNESS")]
-        [RegularExpression(@"(100|([1-9][0-9])|[1-9])")]
         public int? STATS_TOUGHNESS { get; set; }
 
         [JsonProperty("STATS_UTILITY")]
-        [RegularExpression(@"(100|([1-9][0-9])|[1-9])")]
         public int? STATS_UTILITY { get; set; }
 
         [JsonProperty("STATS_DIFFICULITY")]
-        [RegularExpression(@"(100|([1-9][0-9])|[1-9])")]
         public int? STATS_DIFFICULITY { get; set; }
 
         [JsonProperty("ROLE")]
