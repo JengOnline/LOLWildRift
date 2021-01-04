@@ -3,6 +3,7 @@ using LOLWildRift.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,13 +13,13 @@ namespace LOLWildRift.Web.Controllers
 {
     public class ChampionsController : Controller
     {
-        private readonly LOLWildRiftService services;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly LOLWildRiftService _services;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ChampionsController(LOLWildRiftService _services, IWebHostEnvironment _webHostEnvironment)
+        public ChampionsController(LOLWildRiftService services, IWebHostEnvironment webHostEnvironment)
         {
-            services = _services;
-            webHostEnvironment = _webHostEnvironment;
+            _services = services;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // List: ChampionsController
@@ -27,7 +28,7 @@ namespace LOLWildRift.Web.Controllers
             ChampionsList champions = new ChampionsList();
             try
             {
-                champions = await services.ChampionList();
+                champions = await _services.ChampionList();
 
                 foreach (var data in champions.Champions)
                 {
@@ -59,7 +60,7 @@ namespace LOLWildRift.Web.Controllers
             ChampionsEntity champions = new ChampionsEntity();
             try
             {
-                champions = await services.GetChampion(id);
+                champions = await _services.GetChampion(id);
             }
             catch (Exception)
             {
@@ -73,8 +74,8 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
-                var roles = await services.RoleList();
-                var lanes = await services.RecommededLaneList();
+                var roles = await _services.RoleList();
+                var lanes = await _services.RecommededLaneList();
 
                 roles.roles.Insert(0, new RoleEntity { ID = 0, ROLE_NAME = "Select" });
                 lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
@@ -101,7 +102,7 @@ namespace LOLWildRift.Web.Controllers
                 {
                     if (championAdd.IMAGE_FILE != null)
                     {
-                        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "ChampionsImage");
                         string filePath = Path.Combine(uploadsFolder, championAdd.IMAGE_FILE.FileName);
                         using (var fileSteam = new FileStream(filePath, FileMode.Create))
                         {
@@ -110,7 +111,8 @@ namespace LOLWildRift.Web.Controllers
 
                         championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
                     }
-                    result = await services.ChampionAddOrUpdate(championAdd);
+                    
+                    result = await _services.ChampionAddOrUpdate(championAdd);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -125,15 +127,15 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
-                var roles = await services.RoleList();
-                var lanes = await services.RecommededLaneList();
+                var roles = await _services.RoleList();
+                var lanes = await _services.RecommededLaneList();
 
                 roles.roles.Insert(0, new RoleEntity { ID = 0, ROLE_NAME = "Select" });
                 lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
                 ViewData["roles"] = roles.roles;
                 ViewData["lanes"] = lanes.Lanes;
 
-                var champions = await services.GetChampion(id);
+                var champions = await _services.GetChampion(id);
 
                 ChampionAddEntity championsAdd = new ChampionAddEntity()
                 {
@@ -170,7 +172,7 @@ namespace LOLWildRift.Web.Controllers
                 {
                     if (championAdd.IMAGE_FILE != null)
                     {
-                        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "ChampionsImage");
                         string filePath = Path.Combine(uploadsFolder, championAdd.IMAGE_FILE.FileName);
                         using (var fileSteam = new FileStream(filePath, FileMode.Create))
                         {
@@ -179,7 +181,7 @@ namespace LOLWildRift.Web.Controllers
 
                         championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
                     }
-                    result = await services.ChampionAddOrUpdate(championAdd);
+                    result = await _services.ChampionAddOrUpdate(championAdd);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -202,13 +204,13 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
-                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "ChampionsImage");
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "ChampionsImage");
                 string filePath = Path.Combine(uploadsFolder, name.Trim() + ".PNG");
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
                 }
-                var result = await services.ChampionDelete(id);
+                var result = await _services.ChampionDelete(id);
                 return RedirectToAction("Index");
             }
             catch

@@ -1,8 +1,11 @@
 ﻿using LOLWildRift.Service.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -12,11 +15,18 @@ namespace LOLWildRift.Service.Controllers
     [ApiController]
     public class ChampionsController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly IChampionsRepository _championsRepository;
+        private string apiKey = "";
 
-        public ChampionsController(IChampionsRepository championsRepository)
+        public ChampionsController(IChampionsRepository championsRepository, IConfiguration configuration)
         {
             _championsRepository = championsRepository;
+            _configuration = configuration;
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                apiKey = _configuration["API-KEY"];
+            }
         }
 
         [HttpPost]
@@ -25,16 +35,24 @@ namespace LOLWildRift.Service.Controllers
         {
             try
             {
-                if (!string.IsNullOrEmpty(champion.NAME))
+                if (Request.Headers["API-KEY"] == apiKey)
                 {
-                    return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionAddOrUpdate(champion)));
+                    if (!string.IsNullOrEmpty(champion.NAME))
+                    {
+                        return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionAddOrUpdate(champion)));
+                    }
+                    else return BadRequest("Name is required!!!");
                 }
-                else return BadRequest("Name is required!!!");
+                else
+                {
+                    return BadRequest("API-KEY not match");
+                }
+
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database" + ex.Message);
+                    "Service temporary and not available" + ex.Message);
             }
         }
 
@@ -53,7 +71,7 @@ namespace LOLWildRift.Service.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Service temporary and not available");
             }
         }
 
@@ -67,8 +85,9 @@ namespace LOLWildRift.Service.Controllers
             }
             catch (Exception)
             {
+
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Service temporary and not available");
             }
         }
 
@@ -83,7 +102,7 @@ namespace LOLWildRift.Service.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Service temporary and not available");
             }
         }
 
@@ -98,7 +117,7 @@ namespace LOLWildRift.Service.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                    "Service temporary and not available");
             }
         }
 
@@ -117,7 +136,7 @@ namespace LOLWildRift.Service.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database" + ex.Message);
+                    "Service temporary and not available" + ex.Message);
             }
         }
     }

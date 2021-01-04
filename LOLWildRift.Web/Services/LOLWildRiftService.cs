@@ -1,7 +1,9 @@
 ﻿using LOLWildRift.Web.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -11,18 +13,19 @@ namespace LOLWildRift.Web.Services
 {
     public class LOLWildRiftService : IDisposable
     {
+        private static IConfiguration _configuration;
         static HttpClient client = new HttpClient();
         private readonly string url = "http://localhost:50086/api/Champions/";
-
+        private readonly string apiKey = "";
+        private readonly string configApiKey = "API-KEY";
 
         public void Dispose()
         {
 
         }
-
         public LOLWildRiftService()
         {
-
+            apiKey = GetSectionValue(configApiKey);
         }
 
         public async Task<ChampionsList> ChampionList()
@@ -112,8 +115,11 @@ namespace LOLWildRift.Web.Services
             try
             {
                 string reqBody = JsonConvert.SerializeObject(champion);
-                HttpResponseMessage response = await client.PostAsync(url + "ChampionAddOrUpdate", 
-                    new StringContent(reqBody, Encoding.UTF8, "application/json"));
+                HttpRequestMessage reqMessage = new HttpRequestMessage(HttpMethod.Post, url + "ChampionAddOrUpdate");
+                reqMessage.Headers.Add(configApiKey, apiKey);
+                reqMessage.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.SendAsync(reqMessage);
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
@@ -154,6 +160,33 @@ namespace LOLWildRift.Web.Services
                 result.RESULT = false;
             }
             return result;
+        }
+
+
+       
+        public static IConfiguration Configuration
+        {
+            get
+            {
+                if (_configuration == null)
+                {
+                    IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(
+                        Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange:
+                        false);
+                    _configuration = builder.Build();
+                }
+
+                return _configuration;
+            }
+            set
+            {
+                _configuration = value;
+            }
+        }
+
+        public static string GetSectionValue(string sectionName)
+        {
+            return Configuration.GetSection(sectionName).Value;
         }
 
     }
