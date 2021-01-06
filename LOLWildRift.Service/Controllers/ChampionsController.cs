@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Net.Http.Headers;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +19,10 @@ namespace LOLWildRift.Service.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IChampionsRepository _championsRepository;
-        private string apiKey = "";
+        private static string apiKey = "";
+        private static string username = "";
+        private static string password = "";
+
 
         public ChampionsController(IChampionsRepository championsRepository, IConfiguration configuration)
         {
@@ -25,10 +30,17 @@ namespace LOLWildRift.Service.Controllers
             _configuration = configuration;
             if (string.IsNullOrEmpty(apiKey))
             {
-                apiKey = _configuration["API-KEY"];
+                apiKey = _configuration["Auth:API-KEY"];
+                username = _configuration["Auth:Username"];
+                password = _configuration["Auth:Password"];
             }
         }
 
+        /// <summary>
+        /// Auth API-Key
+        /// </summary>
+        /// <param name="champion"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("ChampionAddOrUpdate")]
         public async Task<IActionResult> ChampionAddOrUpdate([FromBody] ChampionAddEntity champion)
@@ -75,13 +87,32 @@ namespace LOLWildRift.Service.Controllers
             }
         }
 
+        /// <summary>
+        ///  Basic Auth
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("ChampionsList")]
         public async Task<IActionResult> ChampionsList()
         {
             try
             {
-                return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionsList()));
+                var authHeader = Request.Headers["Authorization"];
+                if (!string.IsNullOrEmpty(authHeader))
+                {
+                    if (AuthenticateUser(authHeader))
+                    {
+                        return Ok(JsonConvert.SerializeObject(await _championsRepository.ChampionsList()));
+                    }
+                    else
+                    {
+                        return BadRequest("authentication is not match.");
+                    }
+                }
+                else
+                {
+                    return BadRequest("authentication is null or emtry");
+                }
             }
             catch (Exception)
             {
@@ -139,6 +170,43 @@ namespace LOLWildRift.Service.Controllers
                     "Service temporary and not available" + ex.Message);
             }
         }
+
+        private bool AuthenticateUser(string authHeader)
+        {
+            bool authPass = false;
+            try
+            {
+                var authHeaderVal = AuthenticationHeaderValue.Parse(authHeader);
+                if (authHeaderVal.Scheme.Equals("basic", StringComparison.OrdinalIgnoreCase) && authHeaderVal.Parameter != null)
+                {
+                    var encoding = Encoding.GetEncoding("iso-8859-1");
+                    var credentials = encoding.GetString(Convert.FromBase64String(authHeaderVal.Parameter));
+                    int separator = credentials.IndexOf(':');
+                    string name = credentials.Substring(0, separator);
+                    string pass = credentials.Substring(separator + 1);
+
+                    if (username == name && password == pass)
+                    {
+                        authPass = true;
+                    }
+                    else
+                    {
+                        authPass = false;
+                    }
+                }
+                else
+                {
+                    authPass = false;
+                }
+            }
+            catch (FormatException)
+            {
+                authPass = false;
+            }
+            return authPass;
+        }
+
+       
     }
 }
 

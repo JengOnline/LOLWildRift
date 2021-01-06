@@ -218,5 +218,12 @@ namespace LOLWildRift.Web.Controllers
                 return View();
             }
         }
+
+
+        [HttpGet]
+        public ActionResult ErrorPage()
+        {
+            return View();
+        }
     }
 }

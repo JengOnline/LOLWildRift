@@ -16,8 +16,11 @@ namespace LOLWildRift.Web.Services
         private static IConfiguration _configuration;
         static HttpClient client = new HttpClient();
         private readonly string url = "http://localhost:50086/api/Champions/";
-        private readonly string apiKey = "";
+        private static string apiKey = "";
+        private static string username = "";
+        private static string password = "";
         private readonly string configApiKey = "API-KEY";
+        private readonly string configBasicAuth = "Authorization";
 
         public void Dispose()
         {
@@ -25,24 +28,43 @@ namespace LOLWildRift.Web.Services
         }
         public LOLWildRiftService()
         {
-            apiKey = GetSectionValue(configApiKey);
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                apiKey = GetSectionValue(configApiKey);
+                username = GetSectionValue("Username");
+                password = GetSectionValue("Password");
+            }
         }
-
+        /// <summary>
+        /// Basic auth
+        /// </summary>
+        /// <returns></returns>
         public async Task<ChampionsList> ChampionList()
         {
             ChampionsList champions = new ChampionsList();
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url + "ChampionsList");
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url + "ChampionsList");
+                var auth = "Basic ";
+                var encoding = Encoding.GetEncoding("iso-8859-1");
+                auth += Convert.ToBase64String(encoding.GetBytes(username + ":" + password));
+                requestMessage.Headers.Add(configBasicAuth, auth);
+                HttpResponseMessage response = await client.SendAsync(requestMessage);
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
                     champions = JsonConvert.DeserializeObject<ChampionsList>(responseStr);
+                    champions.Error = false;
+                }
+                else
+                {
+                    champions.Error = true;
                 }
             }
             catch (Exception)
             {
                 champions = new ChampionsList();
+                champions.Error = true;
             }
             return champions;
         }
@@ -109,6 +131,11 @@ namespace LOLWildRift.Web.Services
             return lanes;
         }
 
+        /// <summary>
+        /// Auth API-KEY
+        /// </summary>
+        /// <param name="champion"></param>
+        /// <returns></returns>
         public async Task<ResultEntity> ChampionAddOrUpdate(ChampionAddEntity champion)
         {
             ResultEntity result = new ResultEntity();
@@ -163,7 +190,7 @@ namespace LOLWildRift.Web.Services
         }
 
 
-       
+
         public static IConfiguration Configuration
         {
             get
@@ -186,7 +213,7 @@ namespace LOLWildRift.Web.Services
 
         public static string GetSectionValue(string sectionName)
         {
-            return Configuration.GetSection(sectionName).Value;
+            return Configuration.GetSection("Auth:" + sectionName).Value;
         }
 
     }

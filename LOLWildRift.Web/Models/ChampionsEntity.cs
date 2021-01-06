@@ -63,6 +63,8 @@ namespace LOLWildRift.Web.Models
             get { return _champions; }
             set { value = _champions; }
         }
+
+        public bool Error { get; set; }
     }
 
     public class ChampionAddEntity : ChampionsEntity
