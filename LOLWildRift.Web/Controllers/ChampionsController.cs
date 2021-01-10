@@ -29,27 +29,33 @@ namespace LOLWildRift.Web.Controllers
             try
             {
                 champions = await _services.ChampionList();
-
-                foreach (var data in champions.Champions)
+                if (!champions.Error)
                 {
-                    if (data.HISTORY != null && data.HISTORY.Length > 10)
+                    foreach (var data in champions.Champions)
                     {
-                        data.HISTORY = data.HISTORY.Substring(0, 50) + "...";
+                        if (data.HISTORY != null && data.HISTORY.Length > 10)
+                        {
+                            data.HISTORY = data.HISTORY.Substring(0, 50) + "...";
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(searchString))
+                    {
+                        @ViewData["CurrentFilter"] = searchString;
+                        var resultObj = champions.Champions.Where(c => c.NAME.ToUpper().Contains(searchString.ToUpper())
+                        || c.LANE.ToUpper().Contains(searchString.ToUpper())
+                        || c.ROLE.ToUpper().Contains(searchString.ToUpper()));
+                        return View(resultObj.ToList());
                     }
                 }
-
-                if (!String.IsNullOrEmpty(searchString))
+                else
                 {
-                    @ViewData["CurrentFilter"] = searchString;
-                    var resultObj = champions.Champions.Where(c => c.NAME.ToUpper().Contains(searchString.ToUpper())
-                    || c.LANE.ToUpper().Contains(searchString.ToUpper())
-                    || c.ROLE.ToUpper().Contains(searchString.ToUpper()));
-                    return View(resultObj.ToList());
+                    return RedirectToAction("ErrorPage");
                 }
             }
             catch (Exception)
             {
-
+                return RedirectToAction("ErrorPage");
             }
             return View(champions.Champions);
         }
@@ -61,10 +67,14 @@ namespace LOLWildRift.Web.Controllers
             try
             {
                 champions = await _services.GetChampion(id);
+                if (champions.Error)
+                {
+                    return RedirectToAction("ErrorPage");
+                }
             }
             catch (Exception)
             {
-
+                return RedirectToAction("ErrorPage");
             }
             return View(champions);
         }
@@ -84,7 +94,7 @@ namespace LOLWildRift.Web.Controllers
             }
             catch (Exception)
             {
-
+                return RedirectToAction("ErrorPage");
             }
             return View();
         }
@@ -113,12 +123,17 @@ namespace LOLWildRift.Web.Controllers
                     }
                     
                     result = await _services.ChampionAddOrUpdate(championAdd);
+
+                    if (!result.RESULT)
+                    {
+                        return RedirectToAction("ErrorPage");
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("ErrorPage");
             }
         }
 
@@ -155,8 +170,7 @@ namespace LOLWildRift.Web.Controllers
             }
             catch (Exception)
             {
-
-                return View();
+                return RedirectToAction("ErrorPage");
             }
         }
 
@@ -182,12 +196,16 @@ namespace LOLWildRift.Web.Controllers
                         championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
                     }
                     result = await _services.ChampionAddOrUpdate(championAdd);
+                    if (!result.RESULT)
+                    {
+                        return RedirectToAction("ErrorPage");
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return RedirectToAction("ErrorPage");
             }
         }
 
@@ -211,11 +229,15 @@ namespace LOLWildRift.Web.Controllers
                     System.IO.File.Delete(filePath);
                 }
                 var result = await _services.ChampionDelete(id);
+                if (!result.RESULT)
+                {
+                    return RedirectToAction("ErrorPage");
+                }
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction("ErrorPage");
             }
         }
 

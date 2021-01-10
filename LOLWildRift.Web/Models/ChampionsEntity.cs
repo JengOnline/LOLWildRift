@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LOLWildRift.Web.Models
 {
-    public class ChampionsEntity
+    public class ChampionsEntity : ErrorEntity
     {
         [JsonProperty("ID")]
         public int ID { get; set; }
@@ -18,8 +18,8 @@ namespace LOLWildRift.Web.Models
         public string HISTORY { get; set; }
 
         [JsonProperty("STATS_DAMAGE")]
-        [Range(1,100,ErrorMessage ="Value for {0} must be between {1} and {2}.")]
-      
+        [Range(1, 100, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+
         public int? STATS_DAMAGE { get; set; }
 
         [JsonProperty("STATS_TOUGHNESS")]
@@ -42,7 +42,7 @@ namespace LOLWildRift.Web.Models
         public string IMAGE_PATH { get; set; }
     }
 
-    public class ResultEntity
+    public class ResultEntity 
     {
 
         [JsonProperty("RESULT")]
@@ -50,7 +50,7 @@ namespace LOLWildRift.Web.Models
         public bool RESULT { get; set; }
     }
 
-    public class ChampionsList
+    public class ChampionsList : ErrorEntity
     {
         private List<ChampionsEntity> _champions;
         public ChampionsList()
@@ -64,7 +64,7 @@ namespace LOLWildRift.Web.Models
             set { value = _champions; }
         }
 
-        public bool Error { get; set; }
+
     }
 
     public class ChampionAddEntity : ChampionsEntity
@@ -77,6 +77,12 @@ namespace LOLWildRift.Web.Models
 
         [JsonProperty("IMAGE_FILE")]
         public IFormFile IMAGE_FILE { get; set; }
+    }
+
+    public class ErrorEntity
+    {
+        public bool Error { get; set; }
+
     }
 
 

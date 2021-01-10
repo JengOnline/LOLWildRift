@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LOLWildRift.Service", "LOLWildRift.Service\LOLWildRift.Service.csproj", "{B6687BAD-4E0B-46CA-90CF-809DFEE42863}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOLWildRift.Web", "LOLWildRift.Web\LOLWildRift.Web.csproj", "{D2220D43-4D80-4A31-8960-F216AC9995A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LOLWildRift.Web", "LOLWildRift.Web\LOLWildRift.Web.csproj", "{D2220D43-4D80-4A31-8960-F216AC9995A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

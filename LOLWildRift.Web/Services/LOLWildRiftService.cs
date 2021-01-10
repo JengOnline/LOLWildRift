@@ -84,11 +84,16 @@ namespace LOLWildRift.Web.Services
                         var responseStr = await response.Content.ReadAsStringAsync();
                         champions = JsonConvert.DeserializeObject<ChampionsEntity>(responseStr);
                     }
+                    else
+                    {
+                        champions.Error = true;
+                    }
                 }
             }
             catch (Exception)
             {
                 champions = new ChampionsEntity();
+                champions.Error = true;
             }
             return champions;
         }
