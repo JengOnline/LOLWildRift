@@ -26,7 +26,7 @@ namespace LOLWildRift.Service
             services.AddControllers();
             services.AddDbContext<ChampionsContext>(options =>
             {
-                options.UseSqlServer("server=DESKTOP-8U7EVMH\\SQLEXPRESS;database=LOL_WILD_RIFT_DB;trusted_connection=true;");
+                options.UseSqlServer(Configuration.GetConnectionString("LOLWildRiftDB"));
             });
             services.AddScoped<IChampionsRepository, ChampionsRepository>();
 
