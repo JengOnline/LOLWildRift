@@ -25,6 +25,16 @@ namespace LOLWildRift.Web
         {
             services.AddControllersWithViews();
             services.AddScoped<LOLWildRiftService>();
+
+            //session
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,11 +48,14 @@ namespace LOLWildRift.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -50,6 +63,7 @@ namespace LOLWildRift.Web
                     name: "default",
                     pattern: "{controller=Champions}/{action=Index}/{id?}");
             });
+           
         }
     }
 }

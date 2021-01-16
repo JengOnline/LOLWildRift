@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Champion";
+    ViewData["Login"] = ViewData["_authen"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,8 +17,8 @@
     </div>
     <div class="col-md-6">
         <form asp-action="Index" method="get" class="form-inline">
-            <input type="text" placeholder="search" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" style="width:70%"/>
-            <input type="submit" value="Search" class="btn btn-outline-info" style="width:30%"/>
+            <input type="text" placeholder="search" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" style="width:70%" />
+            <input type="submit" value="Search" class="btn btn-outline-info" style="width:30%" />
         </form>
     </div>
 </div>
@@ -86,10 +87,11 @@
                     <img src="@item.IMAGE_PATH" height="80" width="80">
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-warning" style="width:100%; height:auto"
+                    <button type="button" class="btn btn-outline-warning btnEdit" style="width:100%; height:auto; display:none"
                             onclick="location.href='@Url.Action("Edit", "Champions", new { id = item.ID })'">
                         <i class="far fa-edit"></i>
                     </button>
+
                     <button type="button" class="btn btn-outline-info" style="width: 100%; height: auto"
                             onclick="location.href='@Url.Action("Details", "Champions", new { id = item.ID })'">
                         <i class="fa fa-info-circle"></i>
@@ -137,30 +139,40 @@
 
 @section scripts{
     <script type="text/javascript">
-
         //Javascript
-        $(".table").on("click", "#btnDelete", function () {
-            var id = $(this).data('id');
-            document.getElementById('lblID').value = id;
-            document.getElementById('lblName').innerHTML = "Champion : " + document.getElementById('lblName_' + id).innerHTML;
+        $(".table").on("click", "#btnDelete", function() {
+                var id = $(this).data('id');
+                document.getElementById('lblID').value = id;
+                document.getElementById('lblName').innerHTML = "Champion : " + document.getElementById('lblName_' + id).innerHTML;
             $('#deleteModal').modal('show');
-        });
+            });
 
-        $(function () {
+        $(function() {
             //Jquery
-            $("#btnAcceptDelete").click(function () {
-                var url = "/Champions/Delete";
-                var id = parseInt($('#lblID').val());
+            $("#btnAcceptDelete").click(function() {
+                    var url = "/Champions/Delete";
+                    var id = parseInt($('#lblID').val());
                 //ajax
                 $.ajax({
                     type: "POST",
                     url: url,
                     data: { id: id, name: document.getElementById('lblName_' + id).innerHTML },
-                    success: function (data) {
-                        window.location.reload();
-                    }
+                    success: function(data) {
+                            window.location.reload();
+                        }
+                    });
                 });
             });
-        });
+
+        $(document).ready(function() {
+              @if(ViewData["_authen"].ToString() != "") { 
+              <text>
+            /*ID = Single
+              Class = Multiple */
+              $('.btnEdit').show();
+              </text>
+               }
+            });
+
     </script>
 }

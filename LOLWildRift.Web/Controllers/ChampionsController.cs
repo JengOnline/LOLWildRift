@@ -2,6 +2,7 @@
 using LOLWildRift.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,7 +16,7 @@ namespace LOLWildRift.Web.Controllers
     {
         private readonly LOLWildRiftService _services;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
+        private readonly string sessionKeyLogin = "_authen";
         public ChampionsController(LOLWildRiftService services, IWebHostEnvironment webHostEnvironment)
         {
             _services = services;
@@ -28,6 +29,10 @@ namespace LOLWildRift.Web.Controllers
             ChampionsList champions = new ChampionsList();
             try
             {
+                ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin)) 
+                    ? string.Empty 
+                    : HttpContext.Session.GetString(sessionKeyLogin);
+
                 champions = await _services.ChampionList();
                 if (!champions.Error)
                 {
@@ -121,7 +126,7 @@ namespace LOLWildRift.Web.Controllers
 
                         championAdd.IMAGE_PATH = "/ChampionsImage/" + championAdd.IMAGE_FILE.FileName;
                     }
-                    
+
                     result = await _services.ChampionAddOrUpdate(championAdd);
 
                     if (!result.RESULT)
@@ -247,5 +252,30 @@ namespace LOLWildRift.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(LoginEntity login)
+        {
+            if (login.Username == "admin" && login.Password == "1234")
+            {
+                HttpContext.Session.SetString(sessionKeyLogin, "PASS");
+            }
+            return RedirectToAction("Index");
+        }
+
+        
+        public ActionResult Logout()
+        {
+            HttpContext.Session.SetString(sessionKeyLogin, string.Empty);
+            return RedirectToAction("Index");
+        }
+
+
     }
 }
