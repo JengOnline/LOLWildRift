@@ -171,6 +171,12 @@ namespace LOLWildRift.Service.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Basic Auth
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <returns></returns>
         private bool AuthenticateUser(string authHeader)
         {
             bool authPass = false;
@@ -205,6 +211,8 @@ namespace LOLWildRift.Service.Controllers
             }
             return authPass;
         }
+
+
 
        
     }
