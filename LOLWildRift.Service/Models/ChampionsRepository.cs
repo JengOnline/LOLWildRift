@@ -80,7 +80,7 @@ namespace LOLWildRift.Service.Models
             RoleList roles = new RoleList();
             try
             {
-                var data = await _championsContext.Roles.FromSqlRaw($"EXEC [ROLE.SP_LIST]").ToListAsync();
+                var data = await _championsContext.Roles.FromSqlRaw($"EXEC [ROLES.SP_LIST]").ToListAsync();
                 roles.roles.AddRange(data);
                 return roles;
             }
