@@ -11,6 +11,8 @@ namespace LOLWildRift.Service.Models
         public Task<Object> GetChampion(int id);
         public Task<Object> ChampionsList();
         public Task<Object> RoleList();
+        public Task<Object> RoleAddOrUpdate(int id ,string role);
+        public Task<Object> RoleDelete(int id);
         public Task<Object> RecommededLaneList();
         public Task<Object> ChampionDelete(int id);
     }

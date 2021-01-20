@@ -41,8 +41,8 @@ namespace LOLWildRift.Service.Controllers
         /// </summary>
         /// <param name="champion"></param>
         /// <returns></returns>
-        [HttpPost]
         [Route("ChampionAddOrUpdate")]
+        [HttpPost]
         public async Task<IActionResult> ChampionAddOrUpdate([FromBody] ChampionAddEntity champion)
         {
             try
@@ -68,8 +68,8 @@ namespace LOLWildRift.Service.Controllers
             }
         }
 
-        [HttpGet]
         [Route("GetChampion")]
+        [HttpGet]
         public async Task<IActionResult> GetChampion([FromHeader] int id)
         {
             try
@@ -91,8 +91,8 @@ namespace LOLWildRift.Service.Controllers
         ///  Basic Auth
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
         [Route("ChampionsList")]
+        [HttpGet]
         public async Task<IActionResult> ChampionsList()
         {
             try
@@ -122,38 +122,8 @@ namespace LOLWildRift.Service.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("RoleList")]
-        public async Task<IActionResult> RoleList()
-        {
-            try
-            {
-                return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleList()));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Service temporary and not available");
-            }
-        }
-
-        [HttpGet]
-        [Route("RecommededLaneList")]
-        public async Task<IActionResult> RecommededLaneList()
-        {
-            try
-            {
-                return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommededLaneList()));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Service temporary and not available");
-            }
-        }
-
-        [HttpPost]
         [Route("ChampionDelete")]
+        [HttpPost]
         public async Task<IActionResult> ChampionDelete([FromHeader] int id)
         {
             try
@@ -170,6 +140,76 @@ namespace LOLWildRift.Service.Controllers
                     "Service temporary and not available" + ex.Message);
             }
         }
+
+        [Route("RoleList")]
+        [HttpGet]
+        public async Task<IActionResult> RoleList()
+        {
+            try
+            {
+                return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleList()));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available");
+            }
+        }
+
+        [Route("RoleAddOrUpdate")]
+        [HttpPut]
+        public async Task<IActionResult> RoleAddOrUpdate(RoleEntity role)
+        {
+            try
+            {
+                if (role.ID > 0)
+                {
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleAddOrUpdate(role.ID, role.ROLE_NAME)));
+                }
+                else return BadRequest("ID is required!!!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available" + ex.Message);
+            }
+        }
+
+        [Route("RoleDelete/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> RoleDelete(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleDelete(id)));
+                }
+                else return BadRequest("ID is required!!!");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available" + ex.Message);
+            }
+        }
+
+        [Route("RecommededLaneList")]
+        [HttpGet]
+        public async Task<IActionResult> RecommededLaneList()
+        {
+            try
+            {
+                return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommededLaneList()));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available");
+            }
+        }
+
 
 
         /// <summary>
@@ -214,7 +254,7 @@ namespace LOLWildRift.Service.Controllers
 
 
 
-       
+
     }
 }
 
