@@ -102,6 +102,7 @@ namespace LOLWildRift.Service.Models
             }
         }
 
+
         public async Task<Object> RoleAddOrUpdate(int id, string role)
         {
             ResultEntity result = new ResultEntity();
@@ -138,7 +139,7 @@ namespace LOLWildRift.Service.Models
             }
         }
 
-        public async Task<Object> RecommededLaneList()
+        public async Task<Object> RecommendedLaneList()
         {
             RecommededLaneList lanes = new RecommededLaneList();
             try
@@ -152,6 +153,44 @@ namespace LOLWildRift.Service.Models
                 throw ex;
             }
         }
+
+        public async Task<Object> RecommendedLaneAddOrUpdate(int id, string lane)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                var response = await _championsContext.AddOrUpdate.FromSqlInterpolated($"EXEC [RECOMMENDED_LANE.SP_ADD_OR_UPDATE] {id},{lane}").ToListAsync();
+                if (response != null && response.Count > 0)
+                {
+                    result = response[0];
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Object> RecommendedLaneDelete(int id)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                var response = await _championsContext.AddOrUpdate.FromSqlInterpolated($"EXEC [RECOMMENDED_LANE.SP_DELETE] {id}").ToListAsync();
+                if (response != null && response.Count > 0)
+                {
+                    result = response[0];
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
 
     }
 }

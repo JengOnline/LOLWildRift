@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 
 namespace LOLWildRift.Service
@@ -42,9 +43,56 @@ namespace LOLWildRift.Service
                         Url = new Uri("http://localhost:50086/")
                     }
                 });
-                
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "basic"
+                        }
+
+                    },
+                     new String[]{}
+                    }
+                });
+
+                c.AddSecurityDefinition("apiKey", new OpenApiSecurityScheme
+                {
+                    Name = "API-KEY",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Authorization header using the API-KEY scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "apiKey"
+                        }
+
+                    },
+                     new String[]{}
+                    }
+                });
+
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
             });
-                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,12 +113,13 @@ namespace LOLWildRift.Service
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(c=>
+            app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Champions");
                 c.RoutePrefix = string.Empty;
-                
             });
+
+
         }
     }
 }

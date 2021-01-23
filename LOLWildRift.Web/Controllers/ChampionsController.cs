@@ -29,8 +29,8 @@ namespace LOLWildRift.Web.Controllers
             ChampionsList champions = new ChampionsList();
             try
             {
-                ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin)) 
-                    ? string.Empty 
+                ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin))
+                    ? string.Empty
                     : HttpContext.Session.GetString(sessionKeyLogin);
 
                 champions = await _services.ChampionList();
@@ -246,7 +246,6 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
-
         [HttpGet]
         public ActionResult ErrorPage()
         {
@@ -262,18 +261,37 @@ namespace LOLWildRift.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginEntity login)
         {
-            if (login.Username == "admin" && login.Password == "1234")
+            try
             {
-                HttpContext.Session.SetString(sessionKeyLogin, "PASS");
+                if (login.Username == "admin" && login.Password == "1234")
+                {
+                    HttpContext.Session.SetString(sessionKeyLogin, "PASS");
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
         }
 
-        
         public ActionResult Logout()
         {
             HttpContext.Session.SetString(sessionKeyLogin, string.Empty);
             return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Role()
+        {
+            try
+            {
+                var result = _services.RoleList();
+                return View(result.Result.roles);
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
         }
 
 

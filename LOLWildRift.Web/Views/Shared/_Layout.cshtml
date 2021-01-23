@@ -22,10 +22,6 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Champions" asp-action="Index">Home</a>
-                        </li>
-
                         <li class="nav-item dropdown ml-auto" style="stroke-dasharray:10px">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Admin
@@ -33,6 +29,8 @@
                             <div class="dropdown-menu fa-pull-right" aria-labelledby="navbarDropdownMenuLink">
                                 @if (!String.IsNullOrEmpty(ViewData["Login"]?.ToString()))
                                 {
+                                    <a class="dropdown-item" asp-controller="Champions" asp-action="Role">Role</a>
+                                    <a class="dropdown-item" asp-controller="Champions" asp-action="RecommendedLane">RecommendedLane</a>
                                     <a class="dropdown-item" asp-controller="Champions" asp-action="Logout">Logout</a>
                                 }
                                 else

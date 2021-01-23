@@ -195,13 +195,13 @@ namespace LOLWildRift.Service.Controllers
             }
         }
 
-        [Route("RecommededLaneList")]
+        [Route("RecommendedLaneList")]
         [HttpGet]
-        public async Task<IActionResult> RecommededLaneList()
+        public async Task<IActionResult> RecommendedLaneList()
         {
             try
             {
-                return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommededLaneList()));
+                return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommendedLaneList()));
             }
             catch (Exception)
             {
@@ -209,6 +209,46 @@ namespace LOLWildRift.Service.Controllers
                     "Service temporary and not available");
             }
         }
+
+        [Route("RecommendedLaneAddOrUpdate")]
+        [HttpPut]
+        public async Task<IActionResult> RecommendedLaneAddOrUpdate(RecommededLaneEntity lane)
+        {
+            try
+            {
+                if (lane.ID > 0)
+                {
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommendedLaneAddOrUpdate(lane.ID, lane.LANE)));
+                }
+                else return BadRequest("ID is required!!!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available" + ex.Message);
+            }
+        }
+
+        [Route("RecommendedLaneDelete/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> RecommendedLaneDelete(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommendedLaneDelete(id)));
+                }
+                else return BadRequest("ID is required!!!");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Service temporary and not available" + ex.Message);
+            }
+        }
+
 
 
 
