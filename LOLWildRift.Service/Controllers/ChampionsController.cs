@@ -162,11 +162,7 @@ namespace LOLWildRift.Service.Controllers
         {
             try
             {
-                if (role.ID > 0)
-                {
-                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleAddOrUpdate(role.ID, role.ROLE_NAME)));
-                }
-                else return BadRequest("ID is required!!!");
+                return Ok(JsonConvert.SerializeObject(await _championsRepository.RoleAddOrUpdate(role.ID, role.ROLE_NAME)));
             }
             catch (Exception ex)
             {

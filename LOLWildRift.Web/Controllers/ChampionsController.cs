@@ -29,9 +29,7 @@ namespace LOLWildRift.Web.Controllers
             ChampionsList champions = new ChampionsList();
             try
             {
-                ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin))
-                    ? string.Empty
-                    : HttpContext.Session.GetString(sessionKeyLogin);
+                AlreadyLoggedIn();
 
                 champions = await _services.ChampionList();
                 if (!champions.Error)
@@ -249,6 +247,7 @@ namespace LOLWildRift.Web.Controllers
         [HttpGet]
         public ActionResult ErrorPage()
         {
+            HttpContext.Session.SetString(sessionKeyLogin, string.Empty);
             return View();
         }
 
@@ -285,13 +284,88 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
-                var result = _services.RoleList();
-                return View(result.Result.roles);
+                AlreadyLoggedIn();
+                var result = await _services.RoleList();
+                return View(result.roles);
             }
             catch
             {
                 return RedirectToAction("ErrorPage");
             }
+        }
+
+        public ActionResult RoleCreate()
+        {
+            try
+            {
+                AlreadyLoggedIn();
+                return View();
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RoleCreate(RoleEntity role)
+        {
+            try
+            {
+                var result = await _services.RoleAddOrUpdate(role);
+                if (result.RESULT)
+                {
+                    return RedirectToAction("Role");
+                }
+                else return RedirectToAction("ErrorPage");
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> RoleDelete(int id)
+        {
+            try
+            {
+                var result = await _services.RoleDelete(id);
+                if (result.RESULT)
+                {
+                    return RedirectToAction("Role");
+                }
+                else
+                {
+                    return RedirectToAction("ErrorPage");
+                }
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> RoleEdit(int id, string role)
+        {
+            try
+            {
+                var req = new RoleEntity() { ID = id, ROLE_NAME = role };
+                var result = await _services.RoleAddOrUpdate(req);
+                return Ok(result);
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        private void AlreadyLoggedIn()
+        {
+            ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin))
+                 ? string.Empty
+                 : HttpContext.Session.GetString(sessionKeyLogin);
         }
 
 

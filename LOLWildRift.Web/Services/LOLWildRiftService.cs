@@ -13,15 +13,21 @@ namespace LOLWildRift.Web.Services
 {
     public class LOLWildRiftService : IDisposable
     {
+        #region Property section
         private static IConfiguration _configuration;
         static HttpClient client = new HttpClient();
+        /// <summary>
+        /// http://localhost:50086/api/Champions/
+        /// </summary>
         private readonly string url = "http://localhost:50086/api/Champions/";
         private static string apiKey = "";
         private static string username = "";
         private static string password = "";
         private readonly string configApiKey = "API-KEY";
         private readonly string configBasicAuth = "Authorization";
+        #endregion
 
+        #region public method 
         public void Dispose()
         {
 
@@ -98,44 +104,6 @@ namespace LOLWildRift.Web.Services
             return champions;
         }
 
-        public async Task<RoleList> RoleList()
-        {
-            RoleList roles = new RoleList();
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync(url + "RoleList");
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseStr = await response.Content.ReadAsStringAsync();
-                    roles = JsonConvert.DeserializeObject<RoleList>(responseStr);
-                }
-            }
-            catch (Exception)
-            {
-                roles = new RoleList();
-            }
-            return roles;
-        }
-
-        public async Task<RecommededLaneList> RecommededLaneList()
-        {
-            RecommededLaneList lanes = new RecommededLaneList();
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:50086/api/Champions/RecommededLaneList");
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseStr = await response.Content.ReadAsStringAsync();
-                    lanes = JsonConvert.DeserializeObject<RecommededLaneList>(responseStr);
-                }
-            }
-            catch (Exception)
-            {
-                lanes = new RecommededLaneList();
-            }
-            return lanes;
-        }
-
         /// <summary>
         /// Auth API-KEY
         /// </summary>
@@ -194,9 +162,94 @@ namespace LOLWildRift.Web.Services
             return result;
         }
 
+        public async Task<RoleList> RoleList()
+        {
+            RoleList roles = new RoleList();
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url + "RoleList");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    roles = JsonConvert.DeserializeObject<RoleList>(responseStr);
+                }
+            }
+            catch (Exception)
+            {
+                roles = new RoleList();
+            }
+            return roles;
+        }
+
+        public async Task<ResultEntity> RoleAddOrUpdate(RoleEntity role)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                var reqBody = JsonConvert.SerializeObject(role);
+                var httpContent = new StringContent(reqBody, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync(url + "RoleAddOrUpdate", httpContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<ResultEntity>(responseStr);
+                }
+                else
+                {
+                    result.RESULT = false;
+                }
+            }
+            catch
+            {
+                result.RESULT = false;
+            }
+            return result;
+        }
+
+        public async Task<ResultEntity> RoleDelete(int id)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync(url + "RoleDelete/" + id);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<ResultEntity>(responseStr);
+                }
+            }
+            catch
+            {
+                result.RESULT = false;
+            }
+            return result;
+        }
+
+        public async Task<RecommededLaneList> RecommededLaneList()
+        {
+            RecommededLaneList lanes = new RecommededLaneList();
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync("http://localhost:50086/api/Champions/RecommededLaneList");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    lanes = JsonConvert.DeserializeObject<RecommededLaneList>(responseStr);
+                }
+            }
+            catch (Exception)
+            {
+                lanes = new RecommededLaneList();
+            }
+            return lanes;
+        }
 
 
-        public static IConfiguration Configuration
+
+        #endregion
+
+        #region Private method
+        private static IConfiguration Configuration
         {
             get
             {
@@ -216,10 +269,10 @@ namespace LOLWildRift.Web.Services
             }
         }
 
-        public static string GetSectionValue(string sectionName)
+        private static string GetSectionValue(string sectionName)
         {
             return Configuration.GetSection("Auth:" + sectionName).Value;
         }
-
+        #endregion
     }
 }

@@ -8,15 +8,25 @@
     <form asp-action="Login">
         <div class="row">
             <div class="col-md-6">
-                <img src="/image/bgWildRift.jpg" style="object-fit:cover;width:100%" />
+                <img src="/image/bgWildRift.jpg" style="object-fit:cover;width:100%" id="img" />
             </div>
             <div class="col-md-6" style="display:flex;align-items:center;">
                 <div class="was-validated" style="width:80%;">
-                    <input name="Username" type="text" placeholder="Username" style="margin-bottom:5%" class="form-control" required />
-                    <input name="Password" type="password" placeholder="Password" style="margin-bottom:5%" class="form-control" required />
+                    <input name="Username" id="txtUsername" type="text" placeholder="Username" style="margin-bottom:5%" class="form-control" required />
+                    <input name="Password" id="txtPassword" type="password" placeholder="Password" style="margin-bottom:5%" class="form-control" required />
                     <input type="submit" value="Login" class="btn btn-outline-primary" />
                 </div>
             </div>
         </div>
     </form>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#img').click(function () {
+            $('#txtUsername').val("admin");
+            $('#txtPassword').val("1234");
+        });
+    </script>
+
+}

@@ -1,0 +1,32 @@
+﻿@model LOLWildRift.Web.Models.RoleEntity
+
+@{
+    ViewData["Title"] = "RoleCreate";
+    ViewData["Login"] = ViewData["_authen"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>RoleCreate</h1>
+
+<h4>RoleEntity</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RoleCreate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ROLE_NAME" class="control-label"></label>
+                <input asp-for="ROLE_NAME" class="form-control" required />
+                <span asp-validation-for="ROLE_NAME" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <button type="button" class="btn btn-outline-info" onclick="location.href='@Url.Action("Role", "Champions")'">Back to List</button>
+</div>
+
