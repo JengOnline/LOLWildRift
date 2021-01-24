@@ -208,15 +208,11 @@ namespace LOLWildRift.Service.Controllers
 
         [Route("RecommendedLaneAddOrUpdate")]
         [HttpPut]
-        public async Task<IActionResult> RecommendedLaneAddOrUpdate(RecommededLaneEntity lane)
+        public async Task<IActionResult> RecommendedLaneAddOrUpdate(RecommendedLaneEntity lane)
         {
             try
             {
-                if (lane.ID > 0)
-                {
-                    return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommendedLaneAddOrUpdate(lane.ID, lane.LANE)));
-                }
-                else return BadRequest("ID is required!!!");
+                return Ok(JsonConvert.SerializeObject(await _championsRepository.RecommendedLaneAddOrUpdate(lane.ID, lane.LANE)));
             }
             catch (Exception ex)
             {

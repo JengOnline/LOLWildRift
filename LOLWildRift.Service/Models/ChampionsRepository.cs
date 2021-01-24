@@ -141,7 +141,7 @@ namespace LOLWildRift.Service.Models
 
         public async Task<Object> RecommendedLaneList()
         {
-            RecommededLaneList lanes = new RecommededLaneList();
+            RecommendedLaneList lanes = new RecommendedLaneList();
             try
             {
                 var data = await _championsContext.Lanes.FromSqlRaw($"EXEC [RECOMMENDED_LANE.SP_LIST]").ToListAsync();

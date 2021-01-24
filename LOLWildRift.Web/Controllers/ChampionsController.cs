@@ -23,7 +23,6 @@ namespace LOLWildRift.Web.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // List: ChampionsController
         public async Task<ActionResult> Index(string searchString)
         {
             ChampionsList champions = new ChampionsList();
@@ -63,7 +62,6 @@ namespace LOLWildRift.Web.Controllers
             return View(champions.Champions);
         }
 
-        // GET: ChampionsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
             ChampionsEntity champions = new ChampionsEntity();
@@ -82,16 +80,15 @@ namespace LOLWildRift.Web.Controllers
             return View(champions);
         }
 
-        // GET: ChampionsController/Create
         public async Task<ActionResult> Create()
         {
             try
             {
                 var roles = await _services.RoleList();
-                var lanes = await _services.RecommededLaneList();
+                var lanes = await _services.RecommendedLaneList();
 
                 roles.roles.Insert(0, new RoleEntity { ID = 0, ROLE_NAME = "Select" });
-                lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
+                lanes.Lanes.Insert(0, new RecommendedLaneEntity { ID = 0, LANE = "Select" });
                 ViewData["roles"] = roles.roles;
                 ViewData["lanes"] = lanes.Lanes;
             }
@@ -102,10 +99,8 @@ namespace LOLWildRift.Web.Controllers
             return View();
         }
 
-        // POST: ChampionsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)  
         public async Task<ActionResult> Create(ChampionAddEntity championAdd)
         {
             try
@@ -140,16 +135,15 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
-        // GET: ChampionsController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
             try
             {
                 var roles = await _services.RoleList();
-                var lanes = await _services.RecommededLaneList();
+                var lanes = await _services.RecommendedLaneList();
 
                 roles.roles.Insert(0, new RoleEntity { ID = 0, ROLE_NAME = "Select" });
-                lanes.Lanes.Insert(0, new RecommededLaneEntity { ID = 0, LANE = "Select" });
+                lanes.Lanes.Insert(0, new RecommendedLaneEntity { ID = 0, LANE = "Select" });
                 ViewData["roles"] = roles.roles;
                 ViewData["lanes"] = lanes.Lanes;
 
@@ -177,7 +171,6 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
-        // POST: ChampionsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, ChampionAddEntity championAdd)
@@ -212,14 +205,12 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
-        // GET: ChampionsController/Delete/5
         [HttpGet]
         public ActionResult Delete()
         {
             return View();
         }
 
-        // POST: ChampionsController/Delete/5
         [HttpPost]
         public async Task<ActionResult> Delete(int id, string name)
         {
@@ -325,6 +316,21 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<ActionResult> RoleEdit(int id, string role)
+        {
+            try
+            {
+                var req = new RoleEntity() { ID = id, ROLE_NAME = role };
+                var result = await _services.RoleAddOrUpdate(req);
+                return Ok(result);
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
         [HttpDelete]
         public async Task<ActionResult> RoleDelete(int id)
         {
@@ -346,13 +352,58 @@ namespace LOLWildRift.Web.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult> RoleEdit(int id, string role)
+        public async Task<ActionResult> RecommendedLane()
         {
             try
             {
-                var req = new RoleEntity() { ID = id, ROLE_NAME = role };
-                var result = await _services.RoleAddOrUpdate(req);
+                AlreadyLoggedIn();
+                var result = await _services.RecommendedLaneList();
+                return View(result.Lanes);
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        public ActionResult RecommendedLaneCreate()
+        {
+            try
+            {
+                AlreadyLoggedIn();
+                return View();
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RecommendedLaneCreate(RecommendedLaneEntity recommendedLane)
+        {
+            try
+            {
+                var result = await _services.RecommendedLaneAddOrUpdate(recommendedLane);
+                if (result.RESULT)
+                {
+                    return RedirectToAction("RecommendedLane");
+                }
+                else return RedirectToAction("ErrorPage");
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> RecommendedLaneEdit(int id, string lane)
+        {
+            try
+            {
+                var req = new RecommendedLaneEntity() { ID = id, LANE = lane };
+                var result = await _services.RecommendedLaneAddOrUpdate(req);
                 return Ok(result);
             }
             catch
@@ -360,6 +411,29 @@ namespace LOLWildRift.Web.Controllers
                 return RedirectToAction("ErrorPage");
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult> RecommendedLaneDelete(int id)
+        {
+            try
+            {
+                var result = await _services.RecommendedLaneDelete(id);
+                if (result.RESULT)
+                {
+                    return RedirectToAction("RecommendedLane");
+                }
+                else
+                {
+                    return RedirectToAction("ErrorPage");
+                }
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPage");
+            }
+        }
+
+        
 
         private void AlreadyLoggedIn()
         {

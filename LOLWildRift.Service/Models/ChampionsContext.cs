@@ -15,7 +15,7 @@ namespace LOLWildRift.Service.Models
         public  DbSet<ChampionsEntity> Champions { get; set; }
         public  DbSet<ResultEntity> AddOrUpdate { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
-        public DbSet<RecommededLaneEntity> Lanes { get; set; }
+        public DbSet<RecommendedLaneEntity> Lanes { get; set; }
 
 
     }

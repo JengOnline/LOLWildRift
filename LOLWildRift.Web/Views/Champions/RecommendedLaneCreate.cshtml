@@ -1,0 +1,29 @@
+﻿@model LOLWildRift.Web.Models.RecommendedLaneEntity
+
+@{
+    ViewData["Title"] = "RecommendedLaneCreate";
+    ViewData["Login"] = ViewData["_authen"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>RecommendedLaneCreate</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RecommendedLaneCreate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="LANE" class="control-label"></label>
+                <input asp-for="LANE" class="form-control" />
+                <span asp-validation-for="LANE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <button type="button" class="btn btn-outline-info" onclick="location.href='@Url.Action("RecommendedLane", "Champions")'">Back to List</button>
+</div>
+

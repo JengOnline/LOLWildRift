@@ -1,24 +1,24 @@
-﻿@model IEnumerable<LOLWildRift.Web.Models.RoleEntity>
+﻿@model IEnumerable<LOLWildRift.Web.Models.RecommendedLaneEntity>
 
 @{
-    ViewData["Title"] = "Role";
+    ViewData["Title"] = "RecommendedLane";
     ViewData["Login"] = ViewData["_authen"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Role</h1>
+<h1>RecommendedLane</h1>
 
 <div class="col-md-6">
     <button type="button" class="btn btn-outline-primary"
-            onclick="location.href='@Url.Action("RoleCreate", "Champions")'">
-        Create role
+            onclick="location.href='@Url.Action("RecommendedLaneCreate", "Champions")'">
+        Create recommended lane
     </button>
 </div>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ROLE_NAME)
+                @Html.DisplayNameFor(model => model.LANE)
             </th>
             <th></th>
         </tr>
@@ -28,8 +28,9 @@
         {
             <tr>
                 <td>
-                    <label id="lblName_@item.ID"> @Html.DisplayFor(modelItem => item.ROLE_NAME)</label>
-                    <input id="txtName_@item.ID" type="text" value="@Html.DisplayFor(modelItem => item.ROLE_NAME)" style="display:none" />
+                    <label id="lblName_@item.ID">@Html.DisplayFor(modelItem => item.LANE)</label>
+                    <input id="txtName_@item.ID" type="text" value="@Html.DisplayFor(modelItem => item.LANE)" style="display:none" />
+
                 </td>
                 <td>
                     <button type="button" class="btn btn-outline-warning btnEdit" id="btnEdit_@item.ID" style="width:50%; height:auto;"
@@ -57,6 +58,7 @@
 <div>
     <button type="button" class="btn btn-outline-info" onclick="location.href='@Url.Action("Index", "Champions")'">Back to List</button>
 </div>
+
 
 <div class="container">
     <!-- The Modal -->
@@ -101,13 +103,13 @@
             });
 
             $('.btnApply').click(function () {
-                var url = "/Champions/RoleEdit";
+                var url = "/Champions/RecommendedLaneEdit";
                 var id = $(this).data('id');
-                var role = $('#txtName_' + id).val();
+                var lane = $('#txtName_' + id).val();
                 $.ajax({
                     type: "PUT",
                     url: url,
-                    data: { id: id, role: role },
+                    data: { id: id, lane: lane },
                     success: function () {
                         //console.log("success");
                         window.location.reload();
@@ -132,7 +134,7 @@
             });
 
             $('#btnAcceptDelete').click(function () {
-                var url = "/Champions/RoleDelete";
+                var url = "/Champions/RecommendedLaneDelete";
                 var id = $('#modalLblID').val();
                 $.ajax({
                     type: "DELETE",
@@ -152,8 +154,6 @@
                 $('#lblName_' + id).show();
                 $('#txtName_' + id).hide();
             }
-
-
         });
     </script>
 }

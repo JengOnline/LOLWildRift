@@ -41,6 +41,7 @@ namespace LOLWildRift.Web.Services
                 password = GetSectionValue("Password");
             }
         }
+        #region Champions
         /// <summary>
         /// Basic auth
         /// </summary>
@@ -162,6 +163,11 @@ namespace LOLWildRift.Web.Services
             return result;
         }
 
+        #endregion
+
+        #region Role
+
+
         public async Task<RoleList> RoleList()
         {
             RoleList roles = new RoleList();
@@ -225,26 +231,74 @@ namespace LOLWildRift.Web.Services
             return result;
         }
 
-        public async Task<RecommededLaneList> RecommededLaneList()
+        #endregion
+        #region RecommendedLane
+
+
+        public async Task<RecommendedLaneList> RecommendedLaneList()
         {
-            RecommededLaneList lanes = new RecommededLaneList();
+            RecommendedLaneList lanes = new RecommendedLaneList();
             try
             {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:50086/api/Champions/RecommededLaneList");
+                HttpResponseMessage response = await client.GetAsync("http://localhost:50086/api/Champions/RecommendedLaneList");
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
-                    lanes = JsonConvert.DeserializeObject<RecommededLaneList>(responseStr);
+                    lanes = JsonConvert.DeserializeObject<RecommendedLaneList>(responseStr);
                 }
             }
             catch (Exception)
             {
-                lanes = new RecommededLaneList();
+                lanes = new RecommendedLaneList();
             }
             return lanes;
         }
 
+        public async Task<ResultEntity> RecommendedLaneAddOrUpdate(RecommendedLaneEntity role)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                var reqBody = JsonConvert.SerializeObject(role);
+                var httpContent = new StringContent(reqBody, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync(url + "RecommendedLaneAddOrUpdate", httpContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<ResultEntity>(responseStr);
+                }
+                else
+                {
+                    result.RESULT = false;
+                }
+            }
+            catch
+            {
+                result.RESULT = false;
+            }
+            return result;
+        }
 
+        public async Task<ResultEntity> RecommendedLaneDelete(int id)
+        {
+            ResultEntity result = new ResultEntity();
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync(url + "RecommendedLaneDelete/" + id);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<ResultEntity>(responseStr);
+                }
+            }
+            catch
+            {
+                result.RESULT = false;
+            }
+            return result;
+        }
+
+        #endregion
 
         #endregion
 

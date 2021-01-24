@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LOLWildRift.Web.Models
 {
-    public class RecommededLaneEntity
+    public class RecommendedLaneEntity
     {
         [JsonProperty("ID")]
         public int ID { get; set; }
@@ -15,15 +15,15 @@ namespace LOLWildRift.Web.Models
         public string LANE { get; set; }
     }
 
-    public class RecommededLaneList
+    public class RecommendedLaneList
     {
-        private List<RecommededLaneEntity> _lane;
-        public RecommededLaneList()
+        private List<RecommendedLaneEntity> _lane;
+        public RecommendedLaneList()
         {
-            _lane = new List<RecommededLaneEntity>();
+            _lane = new List<RecommendedLaneEntity>();
         }
 
-        public List<RecommededLaneEntity> Lanes
+        public List<RecommendedLaneEntity> Lanes
         {
             get { return _lane; }
             set { _lane = value; }
