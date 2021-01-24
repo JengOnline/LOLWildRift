@@ -18,6 +18,7 @@ namespace LOLWildRift.Service.Models
 
         public async Task<Object> ChampionAddOrUpdate(ChampionAddEntity champion)
         {
+            ResultEntity result = new ResultEntity();
             try
             {
                 SqlParameter name = new SqlParameter("@name", champion.NAME ?? (object)DBNull.Value);
@@ -30,11 +31,16 @@ namespace LOLWildRift.Service.Models
                 SqlParameter laneId = new SqlParameter("@laneId", champion.RECOMMENDED_LANE_ID ?? (object)DBNull.Value);
                 SqlParameter imagePath = new SqlParameter("@imagePath", champion.IMAGE_PATH ?? (object)DBNull.Value);
 
-                return await _championsContext.AddOrUpdate.FromSqlRaw(
+                var response =  await _championsContext.AddOrUpdate.FromSqlRaw(
                     $"EXEC [CHAMPIONS.SP_ADD_OR_UPDATE] @name, @history, @damage, @toughness," +
                     $"@utility, @difficulity, @roleId, @laneId, @imagePath",
                     name, history, damage, toughness, utility, difficulity, roleId, laneId, imagePath)
                     .ToListAsync();
+                if(response != null && response.Count > 0)
+                {
+                    result = response[0];
+                }
+                return result;
             }
             catch (Exception ex)
             {
@@ -77,9 +83,15 @@ namespace LOLWildRift.Service.Models
 
         public async Task<Object> ChampionDelete(int id)
         {
+            ResultEntity result = new ResultEntity();
             try
             {
-                return await _championsContext.AddOrUpdate.FromSqlInterpolated($"EXEC [CHAMPIONS.SP_DELETE] {id}").ToListAsync();
+                var response =  await _championsContext.AddOrUpdate.FromSqlInterpolated($"EXEC [CHAMPIONS.SP_DELETE] {id}").ToListAsync();
+                if(response != null && response.Count > 0)
+                {
+                    result = response[0];
+                }
+                return result;
             }
             catch (Exception ex)
             {

@@ -67,6 +67,7 @@ namespace LOLWildRift.Web.Controllers
             ChampionsEntity champions = new ChampionsEntity();
             try
             {
+                AlreadyLoggedIn();
                 champions = await _services.GetChampion(id);
                 if (champions.Error)
                 {
@@ -84,6 +85,7 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
+                AlreadyLoggedIn();
                 var roles = await _services.RoleList();
                 var lanes = await _services.RecommendedLaneList();
 
@@ -127,7 +129,7 @@ namespace LOLWildRift.Web.Controllers
                         return RedirectToAction("ErrorPage");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -139,6 +141,7 @@ namespace LOLWildRift.Web.Controllers
         {
             try
             {
+                AlreadyLoggedIn();
                 var roles = await _services.RoleList();
                 var lanes = await _services.RecommendedLaneList();
 
@@ -437,9 +440,16 @@ namespace LOLWildRift.Web.Controllers
 
         private void AlreadyLoggedIn()
         {
-            ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin))
-                 ? string.Empty
-                 : HttpContext.Session.GetString(sessionKeyLogin);
+            try
+            {
+                ViewData[sessionKeyLogin] = string.IsNullOrEmpty(HttpContext.Session.GetString(sessionKeyLogin))
+                     ? string.Empty
+                     : HttpContext.Session.GetString(sessionKeyLogin);
+            }
+            catch
+            {
+                RedirectToAction("ErrorPage");
+            }
         }
 
 
