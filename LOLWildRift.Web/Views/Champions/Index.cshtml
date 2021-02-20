@@ -96,8 +96,8 @@
                             onclick="location.href='@Url.Action("Details", "Champions", new { id = item.ID })'">
                         <i class="fa fa-info-circle"></i>
                     </button>
-                    <button type="button" class="btn btn-outline-danger" style="width: 100%; height: auto"
-                            id="btnDelete" data-id="@item.ID">
+                    <button type="button" class="btn btn-outline-danger btnDelete" style="width: 100%; height: auto; display:none"
+                            id="btnDelete" data-id="@item.ID" >
                         <i class="fa fa-trash"></i>
                     </button>
 
@@ -170,7 +170,8 @@
             /*ID = Single
               Class = Multiple */
               $('.btnEdit').show();
-              $('#btnCreate').show();
+            $('#btnCreate').show();
+            $('.btnDelete').show();
               </text>
               }
 
