@@ -29,7 +29,7 @@
             <tr>
                 <td>
                     <label id="lblName_@item.ID">@Html.DisplayFor(modelItem => item.LANE)</label>
-                    <input id="txtName_@item.ID" type="text" value="@Html.DisplayFor(modelItem => item.LANE)" style="display:none" />
+                    <input id="txtName_@item.ID" type="text" value="@Html.DisplayFor(modelItem => item.LANE)" style="display:none"/>
 
                 </td>
                 <td>
@@ -106,19 +106,24 @@
                 var url = "/Champions/RecommendedLaneEdit";
                 var id = $(this).data('id');
                 var lane = $('#txtName_' + id).val();
-                $.ajax({
-                    type: "PUT",
-                    url: url,
-                    data: { id: id, lane: lane },
-                    success: function () {
-                        //console.log("success");
-                        window.location.reload();
-                        EditOrCancle(id);
-                    },
-                    error: function () {
-                        //console.log("error!");
-                    }
-                });
+                if (lane == '') {
+                    alert('Lane is required!!!');
+                }
+                else {
+                    $.ajax({
+                        type: "PUT",
+                        url: url,
+                        data: { id: id, lane: lane },
+                        success: function () {
+                            //console.log("success");
+                            window.location.reload();
+                            EditOrCancle(id);
+                        },
+                        error: function () {
+                            //console.log("error!");
+                        }
+                    });
+                }
             });
 
             $('.btnCancle').click(function () {
