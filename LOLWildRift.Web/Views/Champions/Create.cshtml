@@ -42,7 +42,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="STATS_DAMAGE" class="control-label"></label>
-                <input asp-for="STATS_DAMAGE" class="form-control"/>
+                <input asp-for="STATS_DAMAGE" class="form-control" />
                 <span asp-validation-for="STATS_DAMAGE" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -104,13 +104,13 @@
                 $('#btnSubmit').prop('disabled', true);
 
                 if (name.val() == null || name.val() == '') {
-                    nameAlert();
+                    fadeTo("#nameAlert");
                 }
                 if (role.find("option:selected").val() == 0) {
-                    roleAlert();
+                    fadeTo("#roleAlert");
                 }
                 if (lanes.find("option:selected").val() == 0) {
-                    laneAlert();
+                    fadeTo("#laneAlert");
                 }
             }
             else {
@@ -118,27 +118,10 @@
             }
         }
 
-        function nameAlert() {
-            $("#nameAlert").slideDown(500);
-            $("#nameAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#nameAlert").slideUp(1000);
-            });
+        function fadeTo(alertId) {
+            $(alertId).slideDown(500);
+            $(alertId).fadeTo(2000, 500).slideUp(1000);
         }
-
-        function roleAlert() {
-            $("#roleAlert").slideDown(500);
-            $("#roleAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#roleAlert").slideUp(1000);
-            });
-        }
-
-        function laneAlert() {
-            $("#laneAlert").slideDown(500);
-            $("#laneAlert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#laneAlert").slideUp(1000);
-            });
-        }
-
 
         $('#txtName').focusout(function () {
             checkValue();

@@ -90,15 +90,18 @@
                     <button type="button" class="btn btn-outline-warning btnEdit" style="width:100%; height:auto; display:none"
                             onclick="location.href='@Url.Action("Edit", "Champions", new { id = item.ID })'">
                         <i class="far fa-edit"></i>
+                        @*Edit*@
                     </button>
 
                     <button type="button" class="btn btn-outline-info" style="width: 100%; height: auto"
                             onclick="location.href='@Url.Action("Details", "Champions", new { id = item.ID })'">
                         <i class="fa fa-info-circle"></i>
+                        @*Details*@
                     </button>
                     <button type="button" class="btn btn-outline-danger btnDelete" style="width: 100%; height: auto; display:none"
                             id="btnDelete" data-id="@item.ID" >
                         <i class="fa fa-trash"></i>
+                        @*Delete*@
                     </button>
 
                 </td>

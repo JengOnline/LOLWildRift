@@ -42,7 +42,7 @@
                     </button>
                     <button type="button" class="btn btn-outline-info btnApply" id="btnApply_@item.ID" style="width:50%; height:auto;display:none"
                             data-id="@item.ID">
-                        Edit
+                        Apply
                     </button>
                     <button type="button" class="btn btn-outline-danger btnCancle" id="btnCancle_@item.ID" style="width:50%; height:auto;display:none"
                             data-id="@item.ID">
@@ -123,6 +123,15 @@
                 EditOrCancle($(this).data('id'));
             });
 
+            function EditOrCancle(id) {
+                $('#btnEdit_' + id).show();
+                $('#btnDelete_' + id).show();
+                $('#btnApply_' + id).hide();
+                $('#btnCancle_' + id).hide();
+                $('#lblName_' + id).show();
+                $('#txtName_' + id).hide();
+            }
+
             $('.btnDelete').click(function () {
                 var id = $(this).data('id');
                 var role = $('#txtName_' + id).val();
@@ -144,14 +153,7 @@
                 });
             });
 
-            function EditOrCancle(id) {
-                $('#btnEdit_' + id).show();
-                $('#btnDelete_' + id).show();
-                $('#btnApply_' + id).hide();
-                $('#btnCancle_' + id).hide();
-                $('#lblName_' + id).show();
-                $('#txtName_' + id).hide();
-            }
+          
 
 
         });
