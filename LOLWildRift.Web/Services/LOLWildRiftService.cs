@@ -167,7 +167,6 @@ namespace LOLWildRift.Web.Services
 
         #region Role
 
-
         public async Task<RoleList> RoleList()
         {
             RoleList roles = new RoleList();
