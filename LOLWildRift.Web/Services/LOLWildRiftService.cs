@@ -239,7 +239,7 @@ namespace LOLWildRift.Web.Services
             RecommendedLaneList lanes = new RecommendedLaneList();
             try
             {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:50086/api/Champions/RecommendedLaneList");
+                HttpResponseMessage response = await client.GetAsync(url+"RecommendedLaneList");
                 if (response.IsSuccessStatusCode)
                 {
                     var responseStr = await response.Content.ReadAsStringAsync();
