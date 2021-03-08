@@ -19,7 +19,7 @@ namespace LOLWildRift.Web.Services
         /// <summary>
         /// http://localhost:50086/api/Champions/
         /// </summary>
-        private readonly string url = "http://localhost:50086/api/Champions/";
+        private readonly string url = "http://localhost:50099/api/Champions/";
         private static string apiKey = "";
         private static string username = "";
         private static string password = "";
