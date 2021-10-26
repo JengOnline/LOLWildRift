@@ -6,7 +6,7 @@ LOLWildRift.Service
  - appsetting.cs  
    Change the connection according to your database.
    "ConnectionStrings": {
-    "LOLWildRiftDB": "server=DESKTOP-8U7EVMH\\SQLEXPRESS;database=LOL_WILD_RIFT_DB;trusted_connection=true;"
+    "LOLWildRiftDB": "server=xxxxxx\\SQLEXPRESS;database=LOL_WILD_RIFT_DB;trusted_connection=true;"
   }
   
 LOLWildRift.Web
